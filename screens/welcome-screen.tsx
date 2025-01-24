@@ -37,7 +37,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
       {/* Start Button */}
       <Button
         title="Get started"
-        onPress={() => navigation.navigate('SunExposure')}
+        onPress={() => navigation.navigate('HealthConcerns')}
         style={styles.button}
       />
     </View>
