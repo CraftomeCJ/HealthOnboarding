@@ -26,7 +26,7 @@ const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation })
     let newDiets = [...selectedDiets];
 
     if (diet.name === 'None') {
-      newDiets = ['None'];
+      newDiets = [];
     } else {
       newDiets = newDiets.filter((d) => d !== 'None');
       newDiets = newDiets.includes(diet.name)
@@ -42,11 +42,14 @@ const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation })
   };
 
   const handleNext = () => {
-    if (selectedDiets.length === 0) {
+    // Check if "None" is selected (selectedDiets is empty)
+    const isNoneSelected = selectedDiets.length === 0;
+
+    if (isNoneSelected || selectedDiets.length > 0) {
+      navigation.navigate('Allergies');
+    } else {
       Alert.alert('Selection Required', 'Please select at least one diet');
-      return;
     }
-    navigation.navigate('Allergies');
   };
 
   return (
@@ -68,9 +71,17 @@ const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation })
             >
               <View style={styles.checkboxContainer}>
                 <View
-                  style={[styles.checkbox, selectedDiets.includes(diet.name) && styles.checkedBox]}
+                  style={[
+                    styles.checkbox,
+                    (selectedDiets.includes(diet.name) ||
+                      (diet.name === 'None' && selectedDiets.length === 0)) &&
+                      styles.checkedBox,
+                  ]}
                 >
-                  {selectedDiets.includes(diet.name) && <Text style={styles.checkmark}>✓</Text>}
+                  {(selectedDiets.includes(diet.name) ||
+                    (diet.name === 'None' && selectedDiets.length === 0)) && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
                 </View>
               </View>
               <Text style={styles.dietText}>{diet.name}</Text>
