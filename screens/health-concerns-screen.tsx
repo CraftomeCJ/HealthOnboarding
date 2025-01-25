@@ -16,6 +16,7 @@ type HealthConcernsScreenProps = {
 
 const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation }) => {
   const [form, setForm] = useRecoilState(formState);
+
   const selected = form.selectedConcerns || [];
   const prioritizedConcerns = form.prioritizedConcerns || [];
 
@@ -36,7 +37,21 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation 
 
   // Handle drag-and-drop reordering
   const handleDragEnd = ({ data }: { data: HealthConcern[] }) => {
-    setForm({ ...form, prioritizedConcerns: data });
+    // Delay Recoil update to prevent flickering issue
+    setTimeout(() => {
+      setForm((prevForm) => ({
+        ...prevForm,
+        prioritizedConcerns: data,
+      }));
+    }, 100);
+  };
+
+  const handleNext = () => {
+    console.log(
+      'Final Prioritized Order:',
+      prioritizedConcerns.map((item) => item.name)
+    );
+    navigation.navigate('DietSelection');
   };
 
   return (
@@ -44,7 +59,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation 
       <ScrollView contentContainerStyle={styles.container}>
         {/* Selection Section */}
         <Text style={styles.sectionTitle}>
-          Select the top health concerns <Text style={styles.required}>*</Text> {"\n"}(up to 5)
+          Select the top health concerns <Text style={styles.required}>*</Text> {'\n'}(up to 5)
         </Text>
         <FlatList
           data={healthConcerns.data}
@@ -101,13 +116,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation 
 
           <TouchableOpacity
             style={[styles.nextButton, selected.length === 0 && styles.disabledNextButton]}
-            onPress={() => {
-              console.log(
-                'Final Prioritized Order:',
-                prioritizedConcerns.map((item) => item.name)
-              );
-              navigation.navigate('DietSelection');
-            }}
+            onPress={handleNext}
             disabled={selected.length === 0}
           >
             <Text style={styles.nextButtonText}>Next</Text>
