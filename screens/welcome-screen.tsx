@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ImageSourcePropType } from 'react-native
 import { Button } from '../components/button';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type WelcomeScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Welcome'>;
@@ -11,6 +12,7 @@ type WelcomeScreenProps = {
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   const imageSource: ImageSourcePropType = require('../assets/welcome-image.png');
   return (
+    <SafeAreaView style={styles.safeArea}>
     <View style={styles.container}>
       {/* Main Content */}
       <View style={styles.content}>
@@ -41,10 +43,15 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
         style={styles.button}
       />
     </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#E6FAF3', // Matches background color of the screen
+  },
   container: {
     flex: 1,
     padding: 24,
