@@ -8,7 +8,9 @@ export type FormData = {
   prioritizedConcerns?: HealthConcern[];
   diets?: string[];
   allergies?: string[];
-  // ... other fields
+  sunExposure?: string;
+  smoking?: string;
+  alcohol?: string;
 };
 
 export type Diet = {
