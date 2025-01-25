@@ -4,11 +4,11 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from '
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useRecoilState } from 'recoil';
 import { formState } from '../state/formState';
-import healthConcerns from '../assets/health-concern.json';
 import { HealthConcern } from '../types/type';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getHealthConcerns } from '../services/dataLoader';
 
 type HealthConcernsScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'HealthConcerns'>;
@@ -16,6 +16,7 @@ type HealthConcernsScreenProps = {
 
 const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation }) => {
   const [form, setForm] = useRecoilState(formState);
+  const healthConcerns = getHealthConcerns();
 
   const selected = form.selectedConcerns || [];
   const prioritizedConcerns = form.prioritizedConcerns || [];
