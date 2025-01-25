@@ -5,6 +5,6 @@ export type HealthConcern = {
 
 export type FormData = {
   selectedConcerns?: number[];
-  prioritizedConcerns?: HealthConcern[] | number[];
+  prioritizedConcerns?: HealthConcern[];
   // ... other fields
 };
