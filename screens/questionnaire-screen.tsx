@@ -6,6 +6,7 @@ import { formState } from '../state/formState';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import allergiesData from '../assets/allergies.json';
 
 type QuestionnaireScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Questionnaire'>;
@@ -21,8 +22,26 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ navigation })
       return;
     }
 
+    const finalOutput = {
+      health_concerns: form.prioritizedConcerns?.map((concern, index) => ({
+        id: concern.id,
+        name: concern.name,
+        priority: index + 1,
+      })),
+      diets: form.diets,
+      is_daily_exposure: form.sunExposure === 'Yes',
+      is_smoke: form.smoking === 'Yes',
+      alcohol: form.alcohol,
+      allergies: form.allergies
+        ? form.allergies.map((allergy) => ({
+            id: allergiesData.data.find((a) => a.name === allergy)?.id,
+            name: allergy,
+          }))
+        : [],
+    };
+
     setValidationError(null);
-    console.log('Final Selections:', JSON.stringify(form, null, 2));
+    console.log('Final Selections:', JSON.stringify(finalOutput, null, 2));
     navigation.navigate('Summary');
   };
 

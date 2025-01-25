@@ -1,4 +1,3 @@
-// screens/HealthConcernsScreen.tsx
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
