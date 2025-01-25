@@ -24,9 +24,9 @@ const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation })
     if (diet.name === 'None') {
       newDiets = ['None'];
     } else {
-      newDiets = newDiets.filter(d => d !== 'None');
+      newDiets = newDiets.filter((d) => d !== 'None');
       newDiets = newDiets.includes(diet.name)
-        ? newDiets.filter(d => d !== diet.name)
+        ? newDiets.filter((d) => d !== diet.name)
         : [...newDiets, diet.name];
     }
 
@@ -48,25 +48,25 @@ const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation })
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Select the diets you follow<Text style={styles.required}>*</Text></Text>
+        <Text style={styles.header}>
+          Select the diets you follow
+          <Text style={styles.required}>*</Text>
+        </Text>
 
         {diets.map((diet) => (
-          <View key={diet.id} style={styles.dietContainer}>
+          <View
+            key={diet.id}
+            style={styles.dietContainer}
+          >
             <TouchableOpacity
-              style={[
-                styles.dietButton,
-                selectedDiets.includes(diet.name) && styles.selectedDietButton
-              ]}
+              style={styles.dietButton}
               onPress={() => toggleDiet(diet)}
             >
               <View style={styles.checkboxContainer}>
-                <View style={[
-                  styles.checkbox,
-                  selectedDiets.includes(diet.name) && styles.checkedBox
-                ]}>
-                  {selectedDiets.includes(diet.name) && (
-                    <Text style={styles.checkmark}>✓</Text>
-                  )}
+                <View
+                  style={[styles.checkbox, selectedDiets.includes(diet.name) && styles.checkedBox]}
+                >
+                  {selectedDiets.includes(diet.name) && <Text style={styles.checkmark}>✓</Text>}
                 </View>
               </View>
               <Text style={styles.dietText}>{diet.name}</Text>
@@ -124,18 +124,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 12,
-    backgroundColor: '#FFFFFF',
     borderRadius: 8,
     padding: 12,
-    elevation: 2,
   },
   dietButton: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
-  selectedDietButton: {
-    backgroundColor: '#EBF8FF',
   },
   checkboxContainer: {
     marginRight: 16,
@@ -161,16 +156,15 @@ const styles = StyleSheet.create({
   dietText: {
     fontSize: 16,
     color: '#2D3748',
+    flex: 1,
   },
   infoIcon: {
-    padding: 8,
-    backgroundColor: '#E2E8F0',
-    borderRadius: 20,
+    backgroundColor: '#E6FAF3',
+    borderRadius: 12,
     width: 24,
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 12,
   },
   infoText: {
     color: '#4299E1',
@@ -185,19 +179,18 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#E2E8F0',
     width: '45%',
     alignItems: 'center',
   },
   nextButton: {
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#4299E1',
+    backgroundColor: '#FF5A5F',
     width: '45%',
     alignItems: 'center',
   },
   buttonText: {
-    color: '#2D3748',
+    color: '#FF5A5F',
     fontSize: 16,
     fontWeight: '500',
   },
