@@ -1,6 +1,7 @@
 import healthConcernsData from '../assets/health-concern.json';
 import dietsData from '../assets/Diets.json';
 import { Diet } from '../types/type';
+import allergiesData from '../assets/allergies.json';
 
 export const getHealthConcerns = () => healthConcernsData;
 export const getDiets = (): Diet[] => [
@@ -15,3 +16,5 @@ export const getDiets = (): Diet[] => [
     name: data.name === 'Vegaterian' ? 'Vegetarian' : data.name
   }))
 ];
+
+export const getAllergies = () => allergiesData
