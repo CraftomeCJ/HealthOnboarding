@@ -1,6 +1,7 @@
 export type HealthConcern = {
   id: number;
   name: string;
+  priority?: number;
 };
 
 export type FormData = {
