@@ -1,6 +1,6 @@
 // screens/HealthConcernsScreen.tsx
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useRecoilState } from 'recoil';
 import { formState } from '../state/formState';
@@ -8,6 +8,7 @@ import healthConcerns from '../assets/health-concern.json';
 import { HealthConcern } from '../types/type';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type HealthConcernsScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'HealthConcerns'>;
@@ -16,104 +17,125 @@ type HealthConcernsScreenProps = {
 const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation }) => {
   const [form, setForm] = useRecoilState(formState);
   const selected = form.selectedConcerns || [];
+  const prioritizedConcerns = form.prioritizedConcerns || [];
 
   // Toggle health concern selection
   const toggleSelection = (id: number) => {
     const newSelected = selected.includes(id)
-      ? selected.filter(item => item !== id)
+      ? selected.filter((item) => item !== id)
       : [...selected, id].slice(0, 5);
+
+    const newPrioritized = healthConcerns.data.filter((item) => newSelected.includes(item.id));
 
     setForm({
       ...form,
       selectedConcerns: newSelected,
-      prioritizedConcerns: newSelected // Reset order when changing selection
+      prioritizedConcerns: newPrioritized,
     });
   };
 
   // Handle drag-and-drop reordering
-  const handleDragEnd = ({ data }: {data: HealthConcern[]}) => {
+  const handleDragEnd = ({ data }: { data: HealthConcern[] }) => {
     setForm({ ...form, prioritizedConcerns: data });
   };
 
-  // Get selected items with names
-  const selectedItems = healthConcerns.data
-    .filter(item => selected.includes(item.id))
-    .map(item => ({ id: item.id, name: item.name }));
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Selection Section */}
-      <Text style={styles.sectionTitle}>Select Top Health Concerns (max 5)</Text>
-      <FlatList
-        data={healthConcerns.data}
-        numColumns={2}
-        scrollEnabled={false}
-        contentContainerStyle={styles.grid}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.selectionButton,
-              selected.includes(item.id) && styles.selectedButton,
-              selected.length >= 5 && !selected.includes(item.id) && styles.disabledButton
-            ]}
-            onPress={() => toggleSelection(item.id)}
-            disabled={selected.length >= 5 && !selected.includes(item.id)}
-          >
-            <Text style={styles.buttonText}>{item.name}</Text>
-            {selected.includes(item.id) && <Text style={styles.checkmark}>✓</Text>}
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Prioritization Section */}
-      {selected.length > 0 && (
-        <>
-          <Text style={[styles.sectionTitle, { marginTop: 30 }]}>Prioritize Your Selection</Text>
-          <DraggableFlatList
-            data={selectedItems}
-            scrollEnabled={false}
-            keyExtractor={(item) => item.id}
-            onDragEnd={handleDragEnd}
-            contentContainerStyle={styles.dragList}
-            renderItem={({ item, drag }) => (
-              <TouchableOpacity
-                style={styles.draggableItem}
-                onPressIn={drag}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.dragText}>{item.name}</Text>
-                <Text style={styles.dragHandle}>☰</Text>
-              </TouchableOpacity>
-            )}
-          />
-        </>
-      )}
-
-      <View style={styles.footer}>
-        <Text style={styles.counter}>Selected: {selected.length}/5</Text>
-        <Button
-          title="Continue"
-          onPress={() => {
-            console.log('Prioritized Order:', form.prioritizedConcerns);
-            navigation.navigate('DietSelection');
-          }}
-          disabled={selected.length === 0}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Selection Section */}
+        <Text style={styles.sectionTitle}>
+          Select the top health concerns <Text style={styles.required}>*</Text> {"\n"}(up to 5)
+        </Text>
+        <FlatList
+          data={healthConcerns.data}
+          numColumns={2}
+          scrollEnabled={false}
+          contentContainerStyle={styles.grid}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.selectionButton,
+                selected.includes(item.id) && styles.selectedButton,
+                selected.length >= 5 && !selected.includes(item.id) && styles.disabledButton,
+              ]}
+              onPress={() => toggleSelection(item.id)}
+              disabled={selected.length >= 5 && !selected.includes(item.id)}
+            >
+              <Text style={styles.buttonText}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
         />
-      </View>
-    </ScrollView>
+
+        {/* Prioritization Section */}
+        {selected.length > 0 && (
+          <>
+            <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Prioritize</Text>
+            <DraggableFlatList
+              data={prioritizedConcerns}
+              scrollEnabled={false}
+              keyExtractor={(item) => item.id.toString()}
+              onDragEnd={handleDragEnd}
+              contentContainerStyle={styles.dragList}
+              renderItem={({ item, drag }) => (
+                <TouchableOpacity
+                  style={styles.draggableItem}
+                  onPressIn={drag}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.dragText}>{item.name}</Text>
+                  <Text style={styles.dragHandle}>☰</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </>
+        )}
+
+        {/* Navigation Buttons */}
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.nextButton, selected.length === 0 && styles.disabledNextButton]}
+            onPress={() => {
+              console.log(
+                'Final Prioritized Order:',
+                prioritizedConcerns.map((item) => item.name)
+              );
+              navigation.navigate('DietSelection');
+            }}
+            disabled={selected.length === 0}
+          >
+            <Text style={styles.nextButtonText}>Next</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#E6FAF3',
+  },
   container: {
     padding: 16,
-    paddingBottom: 40
+    paddingBottom: 40,
+    backgroundColor: '#e6faf3',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    marginBottom: 16,
-    color: '#2d3748'
+    marginBottom: 12,
+    color: '#2d3748',
+  },
+  required: {
+    color: '#e53e3e',
   },
   grid: {
     gap: 12,
@@ -121,65 +143,77 @@ const styles = StyleSheet.create({
   selectionButton: {
     flex: 1,
     margin: 4,
-    padding: 16,
+    padding: 12,
     borderWidth: 1,
     borderColor: '#cbd5e0',
-    borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    borderRadius: 20,
     alignItems: 'center',
     backgroundColor: 'white',
   },
   selectedButton: {
-    backgroundColor: '#ebf8ff',
-    borderColor: '#4299e1'
+    backgroundColor: '#4299e1',
+    borderColor: '#2b6cb0',
   },
   disabledButton: {
     opacity: 0.5,
-    backgroundColor: '#f7fafc'
+    backgroundColor: '#f7fafc',
   },
   buttonText: {
-    fontSize: 16,
-    color: '#2d3748'
-  },
-  checkmark: {
-    color: '#4299e1',
-    fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 14,
+    color: '#2d3748',
   },
   dragList: {
     borderRadius: 8,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   draggableItem: {
-    padding: 16,
+    padding: 14,
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0'
+    borderBottomColor: '#e2e8f0',
+    borderRadius: 10,
+    marginVertical: 4,
   },
   dragText: {
     fontSize: 16,
-    color: '#2d3748'
+    color: '#2d3748',
   },
   dragHandle: {
-    color: '#a0aec0',
+    color: '#718096',
     fontSize: 20,
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
   },
   footer: {
-    marginTop: 30,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0'
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  counter: {
-    textAlign: 'center',
-    marginBottom: 16,
-    color: '#718096'
-  }
+  backButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    width: '45%',
+  },
+  nextButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#FF5A5F',
+    alignItems: 'center',
+    width: '45%',
+  },
+  disabledNextButton: {
+    backgroundColor: '#A0AEC0',
+  },
+  nextButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default HealthConcernsScreen;
