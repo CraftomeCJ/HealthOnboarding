@@ -7,6 +7,7 @@ import HealthConcernsScreen from './screens/health-concerns-screen';
 import { RecoilRoot } from 'recoil';
 import DietSelectionScreen from './screens/diet-selection-screen';
 import AllergiesScreen from './screens/allergies-screen';
+import QuestionnaireScreen from './screens/questionnaire-screen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -36,6 +37,10 @@ export default function App() {
           <Stack.Screen
             name='Allergies'
             component={AllergiesScreen}
+          />
+          <Stack.Screen
+            name='Questionnaire'
+            component={QuestionnaireScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

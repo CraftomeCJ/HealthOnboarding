@@ -5,4 +5,5 @@ export type RootStackParamList = {
   DietSelection: undefined;
   Allergies: undefined;
   Questionnaire: undefined;
+  Summary: undefined;
 };
