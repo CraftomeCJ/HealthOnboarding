@@ -7,6 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import allergiesData from '../assets/allergies.json';
+import ProgressBar from '../components/progress-bar';
 
 type QuestionnaireScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Questionnaire'>;
@@ -15,6 +16,8 @@ type QuestionnaireScreenProps = {
 const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ navigation }) => {
   const [form, setForm] = useRecoilState(formState);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  const progress = 0.8;
 
   const handleSubmit = () => {
     if (!form.sunExposure || !form.smoking || !form.alcohol) {
@@ -117,6 +120,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ navigation })
           <Text style={styles.submitText}>Get my personalized vitamin</Text>
         </TouchableOpacity>
       </View>
+      <ProgressBar progress={progress} />
     </SafeAreaView>
   );
 };

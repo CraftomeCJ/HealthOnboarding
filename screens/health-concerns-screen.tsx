@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getHealthConcerns } from '../services/dataLoader';
+import ProgressBar from '../components/progress-bar';
 
 type HealthConcernsScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'HealthConcerns'>;
@@ -19,6 +20,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation 
 
   const selected = form.selectedConcerns || [];
   const prioritizedConcerns = form.prioritizedConcerns || [];
+  const progress = 0.2;
 
   // Toggle health concern selection
   const toggleSelection = (id: number) => {
@@ -123,6 +125,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({ navigation 
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <ProgressBar progress={progress} />
     </SafeAreaView>
   );
 };

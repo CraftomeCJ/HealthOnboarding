@@ -8,6 +8,7 @@ import { RootStackParamList } from '../types/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDiets } from '../services/dataLoader';
 import { Diet } from '../types/type';
+import ProgressBar from '../components/progress-bar';
 
 type DietSelectionScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'DietSelection'>;
@@ -15,7 +16,10 @@ type DietSelectionScreenProps = {
 
 const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation }) => {
   const [form, setForm] = useRecoilState(formState);
+
   const selectedDiets = form.diets || [];
+  const progress = 0.4;
+
   const diets = getDiets();
 
   const toggleDiet = (diet: Diet) => {
@@ -97,6 +101,7 @@ const DietSelectionScreen: React.FC<DietSelectionScreenProps> = ({ navigation })
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <ProgressBar progress={progress} />
     </SafeAreaView>
   );
 };

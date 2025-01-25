@@ -4,9 +4,12 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { formState } from '../state/formState';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ProgressBar from '../components/progress-bar';
 
 const SummaryScreen = () => {
   const form = useRecoilValue(formState);
+
+  const progress = 1.0;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -58,6 +61,7 @@ const SummaryScreen = () => {
           <Text style={styles.itemText}>Alcohol: {form.alcohol}</Text>
         </View>
       </ScrollView>
+      <ProgressBar progress={progress} />
     </SafeAreaView>
   );
 };

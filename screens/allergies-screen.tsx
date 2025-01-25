@@ -15,6 +15,7 @@ import { RootStackParamList } from '../types/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAllergies } from '../services/dataLoader';
 import { Allergy } from '../types/type';
+import ProgressBar from '../components/progress-bar';
 
 const { width } = Dimensions.get('window');
 
@@ -25,7 +26,9 @@ type AllergiesScreenProps = {
 const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
   const [form, setForm] = useRecoilState(formState);
   const [inputText, setInputText] = useState('');
+
   const selectedAllergies = form.allergies || [];
+  const progress = 0.6;
 
   const allergies = getAllergies();
 
@@ -140,6 +143,7 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <ProgressBar progress={progress} />
     </SafeAreaView>
   );
 };
@@ -202,7 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   listContainer: {
-    height: width * 1,
+    height: width * 0.89,
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     borderWidth: 1,
